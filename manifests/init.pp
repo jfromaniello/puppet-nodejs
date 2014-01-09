@@ -33,7 +33,7 @@ class nodejs ( $version, $logoutput = 'on_failure' ) {
 
   file { '/usr/local/bin/nave':
     source => "puppet:///modules/nodejs/nave.sh",
-    mode   => 'ug=rwx,o=r'
+    mode   => 'uga=rx,o=r'
   }
 
   # use nave, yo
