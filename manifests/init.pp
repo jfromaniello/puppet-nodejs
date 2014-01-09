@@ -31,14 +31,18 @@ class nodejs ( $version, $logoutput = 'on_failure' ) {
     ensure => present,
   }
 
+  file { '/usr/local/bin/nave':
+    source => "puppet:///modules/nodejs/nave.sh",
+    mode   => 'ug=rwx,o=r'
+  }
+
   # use nave, yo
   exec { 'nave' :
-    command     => "bash -c \"\$(curl -s 'https://raw.github.com/isaacs/nave/master/nave.sh') usemain $version \"",
+    command     => "nave usemain $version",
     path        => [ "/usr/local/bin", "/bin" , "/usr/bin" ],
-    require     => [ Package[ 'curl' ], Package[ 'libssl-dev' ] ],
+    require     => [ Package[ 'curl' ], Package[ 'libssl-dev' ], File['/usr/local/bin/nave'] ],
     environment => [ 'HOME=""', 'PREFIX=/usr/local/lib/node', 'NAVE_JOBS=1' ],
     logoutput   => $logoutput,
-    # btw, this takes forever....
     timeout     => 0,
     unless      => "test \"v$version\" = \"\$(node -v)\""
   }
